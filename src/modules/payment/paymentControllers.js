@@ -15,6 +15,7 @@ export const createPaymentIntent = handleAsyncError(async (req, res, next) => {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(booking.estimatedTotal * 100),
     currency: "usd",
+    payment_method_types: ["card"], 
     metadata: { bookingId: booking._id.toString(), bookingReference: booking.bookingReference },
   });
 
