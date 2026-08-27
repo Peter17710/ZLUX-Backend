@@ -170,7 +170,7 @@
           "response": []
         },
         {
-          "name": "Create Vehicle (Admin)",
+          "name": "Create Vehicle",
           "request": {
             "method": "POST",
             "header": [
@@ -185,7 +185,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"BMW X7\",\n  \"description\": \"Effortless American Luxury. 30-Way Adjustable Perfect Position Seats.\",\n  \"category\": \"SUV\",\n  \"hourlyRate\": 215,\n  \"passengerCapacity\": 6,\n  \"bagsCapacity\": 6\n}"
+              "raw": "{\n  \"name\": \"Range Rover Autobiography\",\n  \"description\": \"Refined capability meets uncompromised elegance, featuring executive class rear seating, dynamic air suspension, and active noise cancellation.\",\n  \"category\": \"SUV\",\n  \"hourlyRate\": 240,\n  \"passengerCapacity\": 4,\n  \"bagsCapacity\": 4,\n  \"imageUrl\": \"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmM7J02uI5Y4YkSanLvXnu0Q-wgYSSVUZZ01vbJSHoFQ&s=10\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/vehicles",
@@ -200,7 +200,7 @@
           "response": []
         },
         {
-          "name": "Update Vehicle (Admin)",
+          "name": "Update Vehicle",
           "request": {
             "method": "PATCH",
             "header": [
@@ -231,7 +231,7 @@
           "response": []
         },
         {
-          "name": "Delete Vehicle (Admin)",
+          "name": "Delete Vehicle",
           "request": {
             "method": "DELETE",
             "header": [
