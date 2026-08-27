@@ -33,6 +33,10 @@ function createApp() {
     next(new appError(`Route not found: ${req.originalUrl}`, 404));
   });
 
+  app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
   app.use(globalError);
 
   return app;
