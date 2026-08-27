@@ -10,10 +10,7 @@ const generateBookingReference = () => {
   return `APX-${random.slice(0, 4)}-${random.slice(4, 8)}`;
 };
 
-// Straight-line distance in km between two coordinates (Haversine formula).
-// This is a rough estimate only — it is NOT real driving distance/time.
-// For accurate pricing by road distance, replace this with a call to
-// Google Distance Matrix API or Mapbox Directions API.
+
 const getDistanceKm = (pointA, pointB) => {
   const toRad = (deg) => (deg * Math.PI) / 180;
   const R = 6371;
@@ -38,8 +35,7 @@ export const createBooking = handleAsyncError(async (req, res, next) => {
     return next(new appError("Missing required trip details", 400));
   }
 
-  // pickupLocation and destination must each be an object coming from the
-  // map/autocomplete on the frontend: { address, lat, lng }
+
   const isValidLocation = (loc) =>
     loc &&
     typeof loc.address === "string" &&
