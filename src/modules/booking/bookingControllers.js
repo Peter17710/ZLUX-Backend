@@ -83,6 +83,7 @@ export const createBooking = handleAsyncError(async (req, res, next) => {
     estimatedHours: hours,
     estimatedTotal,
     bookingReference: generateBookingReference(),
+    accessToken,
   });
 
   res.status(201).json({ ...booking.toObject(), accessToken });
