@@ -23,6 +23,10 @@ function createApp() {
     res.json({ message: "API Running" });
   });
 
+    app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
+  });
+
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/bookings", bookingRoutes);
   app.use("/api/v1/payments", paymentRoutes);
@@ -33,9 +37,6 @@ function createApp() {
     next(new appError(`Route not found: ${req.originalUrl}`, 404));
   });
 
-  app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
-});
 
   app.use(globalError);
 
