@@ -25,6 +25,7 @@ export const createPaymentIntent = handleAsyncError(async (req, res, next) => {
 });
 
 export const confirmPayment = handleAsyncError(async (req, res, next) => {
+  const stripe = getStripe();
   const { bookingId, paymentIntentId } = req.body;
 
   if (!bookingId || !paymentIntentId) {
