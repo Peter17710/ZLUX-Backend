@@ -1,4 +1,3 @@
-// db/models/booking.model.js
 import mongoose from "mongoose";
 
 const locationSchema = new mongoose.Schema(
@@ -26,6 +25,7 @@ const passengerSchema = new mongoose.Schema(
 const bookingSchema = new mongoose.Schema(
   {
     bookingReference: { type: String, unique: true, index: true },
+    accessToken: { type: String, select: false },
     pickupLocation: { type: locationSchema, required: true },
     destination: { type: locationSchema, required: true },
     date: { type: Date, required: true },

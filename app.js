@@ -1,3 +1,4 @@
+// app.js
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -8,22 +9,27 @@ import bookingRoutes from "./src/modules/booking/bookingRoutes.js";
 import paymentRoutes from "./src/modules/payment/paymentRoutes.js";
 import driverRoutes from "./src/modules/driver/driverRoutes.js";
 import vehicleRoutes from "./src/modules/vechile/vehicleRoutes.js";
-
-
-
+import { stripeWebhook } from "./src/modules/payment/paymentControllers.js";
 
 function createApp() {
   const app = express();
 
   app.use(cors());
   app.use(helmet());
+
+  app.post(
+    "/api/v1/webhooks/stripe",
+    express.raw({ type: "application/json" }),
+    stripeWebhook
+  );
+
   app.use(express.json());
 
   app.get("/", (req, res) => {
     res.json({ message: "API Running" });
   });
 
-    app.get("/api/health", (req, res) => {
+  app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
   });
 
@@ -36,7 +42,6 @@ function createApp() {
   app.use((req, res, next) => {
     next(new appError(`Route not found: ${req.originalUrl}`, 404));
   });
-
 
   app.use(globalError);
 

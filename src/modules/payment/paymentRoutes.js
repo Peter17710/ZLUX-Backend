@@ -1,14 +1,12 @@
 import express from "express";
-import {
-  createPaymentIntent,
-  confirmPayment,
-  refundPayment,
-} from "./paymentControllers.js";
+import { protectRoutes, allowTo } from "../auth/authControllers.js";
+import { createPaymentIntent, confirmPayment, refundPayment } from "./paymentControllers.js";
 
-const paymentRoutes = express.Router();
+const router = express.Router();
 
-paymentRoutes.post("/create-intent", createPaymentIntent);
-paymentRoutes.post("/confirm", confirmPayment);
-paymentRoutes.post("/refund", refundPayment);
+router.post("/create-intent", createPaymentIntent);
+router.post("/confirm", confirmPayment);
 
-export default paymentRoutes;
+router.post("/refund", protectRoutes, allowTo("admin"), refundPayment);
+
+export default router;

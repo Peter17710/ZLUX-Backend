@@ -25,22 +25,31 @@ export const createPaymentIntent = handleAsyncError(async (req, res, next) => {
 });
 
 export const confirmPayment = handleAsyncError(async (req, res, next) => {
-  const stripe = getStripe();
   const { bookingId, paymentIntentId } = req.body;
+
+  if (!bookingId || !paymentIntentId) {
+    return next(new appError("bookingId and paymentIntentId are required", 400));
+  }
+
+  const booking = await Booking.findById(bookingId);
+  if (!booking) return next(new appError("Booking not found", 404));
+
+  if (!booking.stripePaymentIntentId || booking.stripePaymentIntentId !== paymentIntentId) {
+    return next(new appError("This payment intent does not belong to this booking", 400));
+  }
 
   const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
   if (paymentIntent.status !== "succeeded") {
     return next(new appError("Payment not completed", 400));
   }
+  if (paymentIntent.metadata.bookingId !== bookingId) {
+    return next(new appError("Payment intent metadata mismatch", 400));
+  }
 
-  const booking = await Booking.findByIdAndUpdate(
-    bookingId,
-    { paymentStatus: "paid" },
-    { new: true }
-  );
+  booking.paymentStatus = "paid";
+  await booking.save();
 
-  if (!booking) return next(new appError("Booking not found", 404));
   res.status(200).json(booking);
 });
 

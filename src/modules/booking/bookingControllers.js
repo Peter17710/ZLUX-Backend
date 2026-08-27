@@ -1,4 +1,3 @@
-// api/v1/controllers/bookingControllers.js
 import crypto from "crypto";
 import { Booking } from "../../../db/models/booking.model.js";
 import { Vehicle } from "../../../db/models/vehicle.model.js";
@@ -35,6 +34,7 @@ export const createBooking = handleAsyncError(async (req, res, next) => {
     return next(new appError("Missing required trip details", 400));
   }
 
+  const accessToken = crypto.randomBytes(16).toString("hex");
 
   const isValidLocation = (loc) =>
     loc &&
@@ -85,7 +85,7 @@ export const createBooking = handleAsyncError(async (req, res, next) => {
     bookingReference: generateBookingReference(),
   });
 
-  res.status(201).json(booking);
+  res.status(201).json({ ...booking.toObject(), accessToken });
 });
 
 export const getBookingById = handleAsyncError(async (req, res, next) => {
