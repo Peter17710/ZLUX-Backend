@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import connectDB from "./db/connection.js";
 import createApp from "./app.js";
 import "dotenv/config";
-console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 dotenv.config();
 
