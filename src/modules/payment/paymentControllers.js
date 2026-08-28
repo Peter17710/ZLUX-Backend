@@ -16,7 +16,10 @@ export const createPaymentIntent = handleAsyncError(async (req, res, next) => {
     amount: Math.round(booking.estimatedTotal * 100),
     currency: "usd",
     payment_method_types: ["card"], 
-    metadata: { bookingId: booking._id.toString(), bookingReference: booking.bookingReference },
+    metadata: {
+      bookingId: booking._id.toString(),
+      bookingReference: booking.bookingReference,
+    },
   });
 
   booking.stripePaymentIntentId = paymentIntent.id;
