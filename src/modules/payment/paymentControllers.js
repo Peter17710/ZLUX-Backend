@@ -1,7 +1,16 @@
 import Stripe from "stripe";
+import paypal from "@paypal/checkout-server-sdk";
 import { Booking } from "../../../db/models/booking.model.js";
 import { handleAsyncError } from "../../middleware/handleAsyncError.js";
 import appError from "../../utils/appError.js";
+
+const getPaypalClient = () => {
+  const environment = new paypal.core.SandboxEnvironment(
+    process.env.PAYPAL_CLIENT_ID,
+    process.env.PAYPAL_CLIENT_SECRET
+  );
+  return new paypal.core.PayPalHttpClient(environment);
+};
 
 const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -106,4 +115,46 @@ export const stripeWebhook = handleAsyncError(async (req, res, next) => {
   }
 
   res.status(200).json({ received: true });
+});
+
+
+export const createPaypalOrder = handleAsyncError(async (req, res, next) => {
+  const { amount } = req.body;
+  if (!amount) return next(new appError("amount is required", 400));
+
+  const client = getPaypalClient();
+  const request = new paypal.orders.OrdersCreateRequest();
+  request.prefer("return=representation");
+  request.requestBody({
+    intent: "CAPTURE",
+    purchase_units: [{ amount: { currency_code: "USD", value: amount.toString() } }],
+  });
+
+  const order = await client.execute(request);
+  res.status(200).json({ id: order.result.id });
+});
+
+export const capturePaypalOrder = handleAsyncError(async (req, res, next) => {
+  const { orderID, bookingId } = req.body;
+  if (!orderID || !bookingId) {
+    return next(new appError("orderID and bookingId are required", 400));
+  }
+
+  const booking = await Booking.findById(bookingId);
+  if (!booking) return next(new appError("Booking not found", 404));
+
+  const client = getPaypalClient();
+  const request = new paypal.orders.OrdersCaptureRequest(orderID);
+  request.requestBody({});
+
+  const capture = await client.execute(request);
+
+  if (capture.result.status !== "COMPLETED") {
+    return next(new appError("PayPal payment not completed", 400));
+  }
+
+  booking.paymentStatus = "paid";
+  await booking.save();
+
+  res.status(200).json({ status: "success", booking, capture: capture.result });
 });
