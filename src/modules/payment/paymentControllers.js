@@ -87,8 +87,7 @@ export const refundPayment = handleAsyncError(async (req, res, next) => {
   res.status(200).json({ message: "Refund issued successfully", booking });
 });
 
-// NOTE: this route must be mounted with express.raw({ type: "application/json" }),
-// not express.json(), so Stripe can verify the signature.
+
 export const stripeWebhook = handleAsyncError(async (req, res, next) => {
   const stripe = getStripe();
   const sig = req.headers["stripe-signature"];
